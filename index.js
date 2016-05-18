@@ -16,8 +16,20 @@ var settings = {
   buildToken: process.env.BUILD_TOKEN
 };
 
+//temp
+ var envVars = require('./harbor.json');
+ settings.buildPlan = envVars.BUILD_PLAN;
+ settings.branch = envVars.BRANCH;
+ settings.shipment = envVars.SHIPMENT;
+ settings.environment = envVars.SHIPMENT_ENVIRONMENT;
+ settings.container = envVars.CONTAINER;
+ settings.buildToken = envVars.BUILD_TOKEN;
+ //temp
+
 var processedBuilds = [];
 var logs = [];
+var initialRun = true;
+var buildUri = util.format('http://buildit.services.dmtio.net/v1/build/%s/%s/latest/success', settings.buildPlan, settings.branch);
 
 app.set('json spaces', 2);
 app.use(bodyParser.json());
@@ -67,13 +79,12 @@ function work() {
     return;
   }
 
-  var uri = util.format('http://buildit.services.dmtio.net/v1/build/%s/%s/latest/success', settings.buildPlan, settings.branch);
-
-  request.get({ uri: uri, json: true }, function (error, response, body) {
+  request.get({ uri: buildUri, json: true }, function (error, response, body) {
     if (!error && response.statusCode == 200) {
 
       //have we seen this build yet?
       if (processedBuilds.indexOf(body.number) === -1) {
+        initial = false;
 
         console.log(body);
         log(util.format('deploying build %s v%s, number %s', settings.buildPlan, body.version, body.number), body.version, body.number, 'processing');
@@ -110,7 +121,22 @@ function work() {
   setTimeout(work, 5000);
 }
 
-work();
+//when starting, get the initial build number as a starting point
+console.log('fetching starting build number...');
+request.get({ uri: buildUri, json: true }, function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+
+    //start with this build
+    processedBuilds.push(body.number);
+    console.log('starting with build ', body.number);
+
+    //kick off process loop
+    work();
+  }
+  else {
+    console.log('initial build number check failed');
+  }
+});
 
 function log(msg, buildVersion, buildNumber, status, err) {
   if (!err)
