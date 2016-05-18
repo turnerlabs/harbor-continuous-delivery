@@ -1,0 +1,8 @@
+{
+  "BUILD_PLAN": "mss-poc-thingproxy",
+  "BRANCH": "develop",
+  "SHIPMENT": "mss-poc-thingproxy",
+  "SHIPMENT_ENVIRONMENT": "dev",
+  "CONTAINER": "mss-poc-thingproxy",
+  "BUILD_TOKEN": "T1hz84PYtol5VC5b9DKWxcj7lgct1V6Y"
+}
