@@ -16,16 +16,6 @@ var settings = {
   buildToken: process.env.BUILD_TOKEN
 };
 
-//temp
- var envVars = require('./harbor.json');
- settings.buildPlan = envVars.BUILD_PLAN;
- settings.branch = envVars.BRANCH;
- settings.shipment = envVars.SHIPMENT;
- settings.environment = envVars.SHIPMENT_ENVIRONMENT;
- settings.container = envVars.CONTAINER;
- settings.buildToken = envVars.BUILD_TOKEN;
- //temp
-
 var processedBuilds = [];
 var logs = [];
 var initialRun = true;
