@@ -104,7 +104,7 @@ function work() {
       }
     }
     else {
-      log(util.format('get a %s when polling builds', response.statusCode), 0, 0, 'failed');
+      console.log('get a %s when polling builds', response.statusCode);      
     }
   });
 
