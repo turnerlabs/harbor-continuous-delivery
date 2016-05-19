@@ -13,7 +13,8 @@ var settings = {
   shipment: process.env.SHIPMENT,
   environment: process.env.SHIPMENT_ENVIRONMENT,
   container: process.env.CONTAINER,
-  buildToken: process.env.BUILD_TOKEN
+  buildToken: process.env.BUILD_TOKEN,
+  pollingInterval: process.env.POLLING_INTERVAL || 30000
 };
 
 var processedBuilds = [];
@@ -108,7 +109,7 @@ function work() {
   });
 
   //schedule another run in a moment
-  setTimeout(work, 5000);
+  setTimeout(work, settings.pollingInterval);
 }
 
 //when starting, get the initial build number as a starting point
