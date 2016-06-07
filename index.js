@@ -5,6 +5,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 //required environment variables
 var settings = {
@@ -50,15 +52,12 @@ app.get('/hc', function (req, res) {
 
 //mount api module
 app.get('/data', function (req, res) {
-  res.send({
-    settings: settings,
-    logs: logs
-  });
+  res.send(getClientPayload());
 });
 
 //start server
 var port = process.env.PORT || 9000;
-app.listen(port);
+server.listen(port);
 console.log('server started and listening on port %s', port);
 
 //poll successful builds and when a new one is detected, fire off the deploy
@@ -90,8 +89,12 @@ function work() {
         };
 
         harbor.deploy(options, function(err, result) {
-          if (!err && result.success)
+          if (!err && result.success) {
             log('deploy succeeded :)', body.version, body.number, 'success');
+
+            //push msg to client
+            sendPayloadToClient();
+          }
           else
             log('deploy failed :(', body.version, body.number, 'failed');
         });
@@ -115,6 +118,7 @@ function work() {
 //when starting, get the initial build number as a starting point
 console.log('fetching starting build number...');
 request.get({ uri: buildUri, json: true }, function (error, response, body) {
+  console.log(response.statusCode);
   if (!error && response.statusCode == 200) {
 
     //start with this build
@@ -143,3 +147,27 @@ function log(msg, buildVersion, buildNumber, status, err) {
     message: msg
   });
 }
+
+function getClientPayload() {
+  return {
+    settings: settings,
+    logs: logs
+  };
+}
+
+function sendPayloadToClient(socket) {
+  console.log('sendPayloadToClient');
+  var audience = socket || io;
+  audience.emit('deploy', getClientPayload());
+}
+
+//socket.io
+io.on('connection', function (socket) {
+  console.log('connection event occurred');
+
+  //attach a 'client-ready' event handler
+  socket.on('client-ready', function () {    
+    console.log('client-ready');
+    sendPayloadToClient(socket);
+  });
+});

@@ -3,29 +3,32 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card'
 import Settings from './settings.jsx'
 import Logs from './logs.jsx'
-import request from 'browser-request'
+import io from 'socket.io-client'
 
 export default class View extends React.Component {
 
-  constructor(props) {
-     super(props);
-
-     this.state = {
-       data: {
-         settings: {},
-         logs: []
-       }
-     };
+  constructor(props) {    
+    super(props);
+    this.state = {
+      data: {
+        settings: {},
+        logs: []
+      }
+    };
   }
 
   componentDidMount() {
-    request({ method: 'GET', url: '/data', json: true }, function(err, res) {
-      if (err)  {
-        console.error(err);
-        throw err;
-      }
-      this.setState({ data: res.body });
+
+    //init socket.io
+    this.socket = io();
+
+    //trigger ui state updates when deploy msg comes in
+    this.socket.on('deploy', function(data) {
+      this.setState({ data: data });
     }.bind(this));
+
+    //send a "ready" msg to the server to get initial state
+    this.socket.emit('client-ready');
   }
 
   render() {
