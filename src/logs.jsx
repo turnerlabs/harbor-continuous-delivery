@@ -2,6 +2,7 @@ import React from 'react'
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table'
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card'
 import { teal500, deepOrange500 } from 'material-ui/styles/colors'
+import moment from 'moment'
 
 export default class Logs extends React.Component {
 
@@ -17,6 +18,10 @@ export default class Logs extends React.Component {
     else if (status === 'failed')
       color = deepOrange500;
     return { 'color': color }
+  }
+
+  formatTime(timeString) {
+    return moment(timeString).fromNow();
   }
 
   render() {
@@ -43,7 +48,7 @@ export default class Logs extends React.Component {
               {this.props.logs.map(function(log) {
                 return (
                   <TableRow key={log.time}>
-                    <TableRowColumn>{log.time}</TableRowColumn>
+                    <TableRowColumn>{this.formatTime(log.time)}</TableRowColumn>
                     <TableRowColumn style={this.getColor(log.status)}>{log.status}</TableRowColumn>
                     <TableRowColumn>{log.buildVersion}</TableRowColumn>
                     <TableRowColumn>{log.buildNumber}</TableRowColumn>
