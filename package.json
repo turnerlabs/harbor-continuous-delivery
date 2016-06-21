@@ -1,6 +1,6 @@
 {
   "name": "harbor-continuous-delivery",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "continously deploys harbor builds",
   "private": true,
   "main": "index.js",
@@ -10,6 +10,7 @@
     "express": "^4.13.4",
     "harbor-client": "git+https://github.com/turnerlabs/harbor-client.git",
     "material-ui": "^0.15.0",
+    "moment": "^2.13.0",
     "react": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-router": "^2.4.0",
@@ -27,7 +28,7 @@
   "scripts": {
     "build": "browserify src/index.jsx -t babelify -o public/bundle.js",
     "watch": "watchify src/index.jsx -v -t babelify -o public/bundle.js",
-    "dev": "npm run watch & live-server --wait=1000 public",    
+    "dev": "npm run watch",
     "start": "node ."
   }
 }

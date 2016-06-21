@@ -16,3 +16,5 @@ BUILD_TOKEN=T1hz84PYtol5VC5b9DKWxcj7lgct1V6Z
 ```
 
 - then, after triggering the shipment, your builds for the specified branch will be deployed.  In the example above, every git push to the develop branch will be deployed to the my-app dev environment.
+
+- also included is a realtime UI that shows the configuration and deployment logs.  Note that there is currently no backing persistent storage so your logs will go away if you restart the container.
