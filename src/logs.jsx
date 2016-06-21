@@ -9,6 +9,9 @@ export default class Logs extends React.Component {
   constructor(props) {
     super(props);
     this.getColor = this.getColor.bind(this);
+
+    //start timer to re-render so that relative time is always up to date
+    setInterval(() => { this.forceUpdate() }, 60000);
   }
 
   getColor(status) {
