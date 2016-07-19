@@ -18,3 +18,10 @@ BUILD_TOKEN=T1hz84PYtol5VC5b9DKWxcj7lgct1V6Z
 - then, after triggering the shipment, your builds for the specified branch will be deployed.  In the example above, every git push to the develop branch will be deployed to the my-app dev environment.
 
 - also included is a realtime UI that shows the configuration and deployment logs.  Note that there is currently no backing persistent storage so your logs will go away if you restart the container.
+
+
+** Note that with v2.0.0, this app requires the use of proxy protocol.  If this image is put on a Harbor shipment, the container needs to be configured to use a TCP port as well as proxy protocol to be enabled.  The following command can be used to enable proxy protcol until the Harbor GUI supports it.
+
+```
+curl -X PUT -H "Content-Type: application/json" -H "x-username: foo" -H "x-token: y9QJmsHjV4mYIIMCZuUzR2Z3ByVKmHGH" http://shipit.services.dmtio.net/v1/shipment/my-shipment/environment/dev/container/my-container/port/PORT --data-binary '{"enable_proxy_protocol": true}'
+```

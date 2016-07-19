@@ -5,7 +5,10 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var cors = require('cors');
-var server = require('http').Server(app);
+var http = require('http');
+var proxywrap = require('findhit-proxywrap');
+var proxiedHttp = proxywrap.proxy(http);
+var server = proxiedHttp.createServer(app);
 var io = require('socket.io')(server);
 
 //required environment variables
