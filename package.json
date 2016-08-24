@@ -1,6 +1,6 @@
 {
   "name": "harbor-continuous-delivery",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "continously deploys harbor builds",
   "private": true,
   "main": "index.js",

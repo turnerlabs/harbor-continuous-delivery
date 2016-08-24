@@ -98,8 +98,10 @@ function work() {
             //push msg to client
             sendPayloadToClient();
           }
-          else
+          else {
+            console.log('ERROR:  ', err);
             log('deploy failed :(', body.version, body.number, 'failed');
+          }            
         });
 
         //add build to list of tracked builds
