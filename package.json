@@ -1,6 +1,6 @@
 {
   "name": "harbor-continuous-delivery",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "continously deploys harbor builds",
   "private": true,
   "main": "index.js",
@@ -8,7 +8,6 @@
     "body-parser": "^1.15.1",
     "cors": "^2.7.1",
     "express": "^4.13.4",
-    "findhit-proxywrap": "^0.3.11",
     "harbor-client": "git+https://github.com/turnerlabs/harbor-client.git",
     "material-ui": "^0.15.0",
     "moment": "^2.13.0",
