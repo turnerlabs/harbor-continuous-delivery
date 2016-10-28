@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var pg = require('pg');
 
 //required environment variables
 var settings = {
@@ -22,11 +23,12 @@ var settings = {
 var processedBuilds = [];
 var logs = [];
 var initialRun = true;
-var buildUri = util.format('http://buildit.services.dmtio.net/v1/build/%s/%s/latest/success', settings.buildPlan, settings.branch);
+var buildUri = util.format('http://buildit.services.dmtio.net/v1/build/%s/%s/latest/success', 
+  settings.buildPlan, 
+  settings.branch);
 
 app.set('json spaces', 2);
 app.use(bodyParser.json());
-
 app.use(cors());
 
 //errors
@@ -127,8 +129,16 @@ request.get({ uri: buildUri, json: true }, function (error, response, body) {
     processedBuilds.push(body.number);
     console.log('starting with build ', body.number);
 
-    //kick off process loop
-    work();
+    //fetch db logs for this buildPlan/branch and add to logs, then kick off work
+    fetchLogsFromDatabase(results => {
+      logs = results;
+
+      //push initial logs from db to all connected clients
+      sendPayloadToClient();
+
+      //kick off process loop
+      work();      
+    });
   }
   else {
     console.log('initial build number check failed');
@@ -141,13 +151,66 @@ function log(msg, buildVersion, buildNumber, status, err) {
   else
     console.error(msg);
 
-  logs.unshift({
+  var record = {
     time: new Date(),
     buildNumber: buildNumber,
     buildVersion: buildVersion,
     status: status,
     message: msg
-  });
+  };  
+
+  //log "success" and "failed" statuses to the database
+  if (status === 'success' || status === 'failed') {
+    logs.unshift(record);
+    writeToDatabase(record);
+  }
+}
+
+function writeToDatabase(record) {
+  var client = new pg.Client();
+  client.connect(err => {
+    if (err) console.log(err);
+
+    client.query('INSERT INTO deploymentlogs(buildPlan, branch, data) VALUES($1, $2, $3);', 
+      [ settings.buildPlan, settings.branch, record ], 
+      (err, result) => {
+        if (err) {
+          console.log('db insert failed: '); 
+          console.log(err);
+        }
+        else {
+          console.log('db insert succeeded');
+        }
+
+        // disconnect the client
+        client.end(err => {
+          if (err) console.log(err);
+        });
+    });    
+  });  
+}
+
+function fetchLogsFromDatabase(callback) {
+  let results = [];
+  var client = new pg.Client();
+  client.connect(err => {
+    if (err) console.log(err);
+
+    console.log('fetching deployment logs');
+    const query = client.query('SELECT data FROM deploymentlogs WHERE buildPlan = $1 AND branch = $2 ORDER BY id DESC;', 
+      [ settings.buildPlan, settings.branch ]);
+
+    // Stream results back one row at a time
+    query.on('row', row => {
+      results.push(row.data);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+      console.log('fetch success');
+      callback(results);
+    });    
+  });  
 }
 
 function getClientPayload() {

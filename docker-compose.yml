@@ -1,0 +1,20 @@
+version: "2"
+services:
+  app:
+    build: .
+    image: registry.services.dmtio.net/harbor-continuous-delivery:3.0.0
+    ports:
+      - "80:80"
+    environment:
+      PORT: 80
+      HEALTHCHECK: /hc
+      BUILD_PLAN: mss-poc-thingproxy
+      BRANCH: develop
+      SHIPMENT: mss-poc-thingproxy
+      SHIPMENT_ENVIRONMENT: dev
+      CONTAINER: mss-poc-thingproxy
+      BUILD_TOKEN: ${BUILD_TOKEN}
+      PGHOST: ${PGHOST}
+      PGDATABASE: ${PGDATABASE}
+      PGUSER: ${PGUSER}
+      PGPASSWORD: ${PGPASSWORD}
