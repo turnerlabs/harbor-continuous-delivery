@@ -3,3 +3,6 @@ public/bundle.js
 harbor.json
 .vscode
 .env
+.terraform
+*.tfstate
+*.tfstate.backup
