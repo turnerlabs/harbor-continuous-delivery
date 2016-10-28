@@ -8,11 +8,11 @@ services:
     environment:
       PORT: 80
       HEALTHCHECK: /hc
-      BUILD_PLAN: mss-poc-thingproxy
+      BUILD_PLAN: my-app
       BRANCH: develop
-      SHIPMENT: mss-poc-thingproxy
+      SHIPMENT: my-app
       SHIPMENT_ENVIRONMENT: dev
-      CONTAINER: mss-poc-thingproxy
+      CONTAINER: app
       BUILD_TOKEN: ${BUILD_TOKEN}
       PGHOST: ${PGHOST}
       PGDATABASE: ${PGDATABASE}

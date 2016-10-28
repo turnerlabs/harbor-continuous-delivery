@@ -1,0 +1,8 @@
+shipments:
+  my-app-continuous-delivery:
+    env: dev
+    barge: cnn
+    containers:
+    - app
+    replicas: 1
+    group: cnn

@@ -12,8 +12,14 @@ BRANCH=develop
 SHIPMENT=my-app
 SHIPMENT_ENVIRONMENT=dev
 CONTAINER=my-app
-BUILD_TOKEN=T1hz84PYtol5VC5b9DKWxcj7lgct1V6Z
+BUILD_TOKEN=
+PGHOST=
+PGDATABASE=
+PGUSER=
+PGPASSWORD=
 ```
+
+- OR, use the compose files and run  `harbor-compose up`
 
 - then, after triggering the shipment, your builds for the specified branch will be deployed.  In the example above, every git push to the develop branch will be deployed to the my-app dev environment.
 
