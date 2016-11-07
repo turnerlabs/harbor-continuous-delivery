@@ -27,6 +27,7 @@
     "watchify": "^3.7.0"
   },
   "scripts": {
+    "test": "chmod +x ./tests.sh && ./test.sh",
     "build": "browserify src/index.jsx -t babelify -o public/bundle.js",
     "watch": "watchify src/index.jsx -v -t babelify -o public/bundle.js",
     "dev": "npm run watch",

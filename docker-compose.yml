@@ -2,19 +2,9 @@ version: "2"
 services:
   app:
     build: .
-    image: registry.services.dmtio.net/harbor-continuous-delivery:3.0.0
+    image: quay.io/turner/harbor-continuous-delivery:${VERSION}
     ports:
       - "80:80"
     environment:
       PORT: 80
       HEALTHCHECK: /hc
-      BUILD_PLAN: my-app
-      BRANCH: develop
-      SHIPMENT: my-app
-      SHIPMENT_ENVIRONMENT: dev
-      CONTAINER: app
-      BUILD_TOKEN: ${BUILD_TOKEN}
-      PGHOST: ${PGHOST}
-      PGDATABASE: ${PGDATABASE}
-      PGUSER: ${PGUSER}
-      PGPASSWORD: ${PGPASSWORD}
