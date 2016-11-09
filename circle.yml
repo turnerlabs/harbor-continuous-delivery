@@ -15,7 +15,7 @@ dependencies:
 
   # use harbor-deploy to get image tag (version) from package.json (or TURNER_METADATA)
   - docker login -e="." -u="${DOCKER_USER}" -p="${DOCKER_PASS}" quay.io
-  - docker run -v `pwd`:/data quay.io/turner/harbor-deploy:0.2.0-add-catalog-function.18 set_build_values -d /data -b $CIRCLE_BRANCH -n $CIRCLE_BUILD_NUM > props && cp props .env
+  - docker run -v `pwd`:/data quay.io/turner/harbor-deploy:0.3.0 set_build_values -d /data -b $CIRCLE_BRANCH -n $CIRCLE_BUILD_NUM > props && cp props .env
   
   # add additional props
   - printf "SHIPMENT=harbor-continuous-delivery\n" >> props
@@ -37,4 +37,4 @@ test:
   - docker-compose push
 
   # catalog in harbor
-  - docker run --env-file props quay.io/turner/harbor-deploy:0.2.0-add-catalog-function.18 catalog
+  - docker run --env-file props quay.io/turner/harbor-deploy:0.3.0 catalog
